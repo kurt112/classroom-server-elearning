@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 
-const whiteList = ['http://localhost:3000']
+const whiteList = ['http://localhost:3000', 'https://admiring-goldstine-7f4e6f.netlify.app']
 
 /**
  * Module dependencies.
