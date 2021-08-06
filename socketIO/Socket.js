@@ -1,7 +1,5 @@
 const {
     userJoinClass,
-    getClassUsers,
-    getCurrentUser,
     userLeave,
     sendMessage,
     getClassData
@@ -16,19 +14,44 @@ const socket = (io) => {
             userJoinClass(socket.id, name, role, path)
             socket.join(path)
 
-            io.to(path).emit('classData', getClassData(path));
+            const usersFilter = getClassData(path).users.filter(e => e.id !== socket.id)
+            const data = {
+                ...getClassData(path),
+                usersFilter
+            }
+            io.to(path).emit('classData', data);
 
             socket.on('sendMessage', (message, time, isAnnouncement, setMessage) => {
-                if(setMessage !== undefined) setMessage()
+                if (setMessage !== undefined) setMessage()
                 io.to(path).emit('messages', sendMessage(path, message, name, time, isAnnouncement))
             })
 
 
             socket.on('disconnect', () => {
+                io.to(path).emit('user-disconnected', socket.id)
                 io.to(path).emit('messages', sendMessage(path, name + ' Has Left The Class ', name, m.format('h:mm a'), true))
                 userLeave(socket.id, path)
+
             })
         })
+
+        console.log("i am here")
+
+        socket.on('sending signal', payload => {
+            io.to(payload.userToSignal).emit('user joined', {
+                signal: payload.signal,
+                callerId: payload.callerId
+            })
+        })
+
+        socket.on('returning signal', payload => {
+            io.to(payload.callerId).emit('receiving returned signal', {
+                signal: payload.signal,
+                id: socket.id
+            })
+        })
+
+
     })
 
 }
