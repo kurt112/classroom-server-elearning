@@ -23,7 +23,7 @@ const classroomData = new Map();
 
 
 const userJoinClass = (id, username, role, classId) => {
-
+    console.log(username)
     // Create New Data If The Class Id is empty
     if (classroomData.get(classId) === undefined) {
         classroomData.set(classId, {
@@ -43,7 +43,7 @@ const getCurrentUser = (id, classId) => classroomData.get(classId).users.find(us
 
 
 // user leaves chat
-const userLeave = (id, classId) => {
+const   userLeave = (id, classId) => {
 
     const index = classroomData.get(classId).users.findIndex(user => user.id === id)
 
@@ -84,7 +84,8 @@ module.exports = {
     getCurrentUser,
     userLeave,
     getClassData,
-    sendMessage
+    sendMessage,
+    classroomData
 }
 
 
