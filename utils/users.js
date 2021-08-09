@@ -22,14 +22,15 @@ const classroomData = new Map();
 // }
 
 
-const userJoinClass = (id, username, role, classId) => {
-    console.log(username)
+const userJoinClass = (id, username, role, classId,classes) => {
+
     // Create New Data If The Class Id is empty
     if (classroomData.get(classId) === undefined) {
         classroomData.set(classId, {
                 classId: 1,
                 users: [],
-                messages: []
+                messages: [],
+                classes
             }
         )
     }
@@ -47,8 +48,17 @@ const   userLeave = (id, classId) => {
 
     const index = classroomData.get(classId).users.findIndex(user => user.id === id)
 
-    if (index !== -1)
-        return classroomData.get(classId).users.splice(index, 1)[0]
+    if (index !== -1){
+        const newData = classroomData.get(classId).users.splice(index, 1)[0]
+
+
+        if(classroomData.get(classId).users.length ===0)
+            classroomData.delete(classId)
+
+
+
+        return newData
+    }
 
 
 }
@@ -78,6 +88,15 @@ const getClassUsers = (classId) => classroomData.get(classId).users
 // Get Class Data
 const getClassData = (classId) => classroomData.get(classId)
 
+const getClasses = () => {
+    const array = []
+    classroomData.forEach(e => {
+        array.push(e)
+    })
+
+    return array
+}
+
 module.exports = {
     userJoinClass,
     getClassUsers,
@@ -85,7 +104,7 @@ module.exports = {
     userLeave,
     getClassData,
     sendMessage,
-    classroomData
+    getClasses
 }
 
 
