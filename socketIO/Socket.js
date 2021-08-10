@@ -40,7 +40,7 @@ const socket = (io) => {
                 io.to(path).emit('user-disconnected', socket.id)
                 io.to(path).emit('messages', sendMessage(path, name + ' Has Left The Class ', name, m.format('h:mm a'), true))
                 userLeave(socket.id, path)
-
+                io.to(path).emit('getUsers', {...getClassData(path)})
                 io.emit('dashboardData', getClasses())
 
             })
@@ -51,8 +51,6 @@ const socket = (io) => {
 
 
         socket.on('dashboard', () =>{
-            console.log("i am here bithc")
-            console.log(getClasses())
             io.emit('dashboardData',getClasses())
         })
 
